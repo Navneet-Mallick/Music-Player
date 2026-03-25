@@ -22,7 +22,7 @@ function openDB() {
 }
 
 // Save a song (blob + metadata), returns the assigned id
-export async function saveSong({ title, artist, genre, blob, color, emoji }) {
+async function saveSong({ title, artist, genre, blob, color, emoji }) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx  = db.transaction(STORE, 'readwrite');
@@ -33,7 +33,7 @@ export async function saveSong({ title, artist, genre, blob, color, emoji }) {
 }
 
 // Load all saved songs, returns array with object URL for each blob
-export async function loadSongs() {
+async function loadSongs() {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx  = db.transaction(STORE, 'readonly');
@@ -51,7 +51,7 @@ export async function loadSongs() {
 }
 
 // Delete a song by its db id
-export async function deleteSong(id) {
+async function deleteSong(id) {
   const db = await openDB();
   return new Promise((resolve, reject) => {
     const tx  = db.transaction(STORE, 'readwrite');
