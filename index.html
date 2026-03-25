@@ -50,9 +50,15 @@
   <main class="main">
     <div class="main-header">
       <h2 id="main-title">All Songs</h2>
-      <div class="search-box">
-        <i class="fa-solid fa-magnifying-glass"></i>
-        <input type="text" id="search-input" placeholder="Search songs, artists…"/>
+      <div class="header-actions">
+        <button class="upload-btn" id="add-to-pl-btn" style="display:none">
+          <i class="fa-solid fa-file-audio"></i> Add Song to Playlist
+        </button>
+        <input type="file" id="pl-song-upload" accept="audio/*" multiple hidden/>
+        <div class="search-box">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" id="search-input" placeholder="Search songs, artists…"/>
+        </div>
       </div>
     </div>
     <div id="song-grid" class="song-grid"></div>
