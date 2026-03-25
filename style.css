@@ -88,14 +88,16 @@ nav { display: flex; flex-direction: column; gap: 2px; }
   overflow-y: auto; max-height: 260px;
 }
 #playlist-sidebar li {
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 8px;
   padding: 8px 12px; border-radius: 6px;
   color: var(--text-muted); font-size: 0.85rem;
   cursor: pointer; transition: all var(--transition);
+  justify-content: space-between;
 }
 #playlist-sidebar li:hover  { color: var(--text); background: var(--surface2); }
-#playlist-sidebar li.active { color: var(--accent); background: var(--accent-dim); }
-#playlist-sidebar li .pl-icon { font-size: 1rem; width: 20px; text-align: center; }
+#playlist-sidebar li.active { color: var(--text); background: var(--surface2); border-left: 3px solid var(--accent); }
+#playlist-sidebar li .pl-icon { font-size: 1rem; width: 20px; text-align: center; flex-shrink: 0; }
+#playlist-sidebar li .pl-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .upload-area { margin-top: auto; padding-top: 12px; }
 .upload-btn {
@@ -220,10 +222,9 @@ nav { display: flex; flex-direction: column; gap: 2px; }
 
 .card-actions {
   display: flex; align-items: center; gap: 6px;
-  margin-top: 8px; opacity: 0;
+  margin-top: 8px; opacity: 1;
   transition: opacity var(--transition);
 }
-.song-card:hover .card-actions { opacity: 1; }
 
 .card-like-btn, .delete-btn {
   background: none; border: none; cursor: pointer;
@@ -478,11 +479,6 @@ nav { display: flex; flex-direction: column; gap: 2px; }
 }
 
 /* ─── Card Actions (like + delete) ──────────────────────────────────────── */
-.card-actions {
-  display: flex; align-items: center; gap: 8px;
-  margin-top: 6px; opacity: 0; transition: opacity 0.2s;
-}
-.song-card:hover .card-actions { opacity: 1; }
 .song-card.active .card-actions { opacity: 1; }
 
 .card-like-btn {
