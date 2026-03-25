@@ -323,3 +323,16 @@ nav { display: flex; flex-direction: column; gap: 4px; }
 .welcome-btn:hover { background: var(--accent-hover); transform: scale(1.04); }
 
 .welcome-sub { font-size: 0.78rem; color: #555; }
+
+/* ─── Delete Button on Local Cards ──────────────────────────────────────── */
+.delete-btn {
+  position: absolute; top: 8px; right: 8px;
+  background: rgba(0,0,0,0.6); border: none; border-radius: 50%;
+  width: 28px; height: 28px; color: #ff4444;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.75rem; cursor: pointer; opacity: 0; transition: opacity 0.2s;
+  z-index: 10;
+}
+.song-card { position: relative; }
+.song-card:hover .delete-btn { opacity: 1; }
+.delete-btn:hover { background: rgba(255,68,68,0.2); }

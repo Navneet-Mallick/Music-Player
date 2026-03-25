@@ -1,4 +1,5 @@
 import { generateLofi, generateSynthwave, generateAmbient } from './tracks.js';
+import { saveSong, loadSongs, deleteSong } from './db.js';
 
 // ─── Song Catalogue ───────────────────────────────────────────────────────────
 // First 3 are real generated tracks. Rest are "browse" cards (like Spotify).
@@ -80,6 +81,27 @@ renderSidebarPlaylists();
 showWelcomeScreen();
 
 async function boot() {
+  // Load previously saved local songs from IndexedDB first
+  try {
+    const saved = await loadSongs();
+    saved.forEach(row => {
+      songs.push({
+        id:        songs.length,
+        dbId:      row.id,       // IndexedDB key (for deletion)
+        title:     row.title,
+        artist:    row.artist,
+        genre:     row.genre || 'Local',
+        duration:  '—',
+        src:       row.src,
+        isLocal:   true,
+        generated: false,
+        color:     row.color,
+        emoji:     row.emoji,
+      });
+    });
+    if (saved.length) { renderGrid(songs); renderQueue(); }
+  } catch (e) { console.warn('IndexedDB load failed', e); }
+
   showToast('🎵 Generating tracks… hang tight', 0);
   try {
     const [lofiUrl, synthUrl, ambientUrl] = await Promise.all([
@@ -200,6 +222,7 @@ function makeSongCard(song) {
     <div class="card-title">${song.title}</div>
     <div class="card-artist">${song.artist}</div>
     <div class="card-meta">${song.genre} · ${song.duration}</div>
+    ${song.isLocal ? `<button class="delete-btn" data-id="${song.id}" title="Remove song"><i class="fa-solid fa-trash"></i></button>` : ''}
   `;
 
   card.addEventListener('click', () => {
@@ -209,6 +232,28 @@ function makeSongCard(song) {
       playSong(song.id);
     }
   });
+
+  // Delete button — stop propagation so it doesn't trigger play
+  if (song.isLocal) {
+    card.querySelector('.delete-btn').addEventListener('click', async e => {
+      e.stopPropagation();
+      if (song.dbId) {
+        try { await deleteSong(song.dbId); } catch (err) { console.warn(err); }
+      }
+      if (currentIndex === song.id) {
+        audio.pause(); isPlaying = false; currentIndex = -1;
+        npTitle.textContent = 'No song selected'; npArtist.textContent = '—';
+        npCover.innerHTML = '<i class="fa-solid fa-music"></i>';
+        updatePlayBtn();
+      }
+      songs = songs.filter(s => s.id !== song.id);
+      // Re-index ids
+      songs.forEach((s, i) => s.id = i);
+      if (currentIndex >= songs.length) currentIndex = -1;
+      renderGrid(songs); renderQueue();
+      showToast('🗑️ Song removed', 1500);
+    });
+  }
   return card;
 }
 
@@ -451,27 +496,36 @@ searchInput.addEventListener('input', () => {
 });
 
 // ─── Local Upload ─────────────────────────────────────────────────────────────
-localUpload.addEventListener('change', e => {
+localUpload.addEventListener('change', async e => {
   const files = Array.from(e.target.files);
   const colors = ['#2a1a3a','#1a3a2a','#3a1a1a','#1a1a3a','#3a2a1a','#0a2a2a'];
   const emojis = ['🎵','🎶','🎸','🎹','🎺','🎻','🥁','🎤'];
-  files.forEach(file => {
-    const url  = URL.createObjectURL(file);
-    const name = file.name.replace(/\.[^/.]+$/, '');
-    const parts = name.split(' - ');
+
+  for (const file of files) {
+    const name   = file.name.replace(/\.[^/.]+$/, '');
+    const parts  = name.split(' - ');
+    const title  = parts.length > 1 ? parts.slice(1).join(' - ') : name;
+    const artist = parts.length > 1 ? parts[0] : 'Unknown Artist';
+    const color  = colors[Math.floor(Math.random() * colors.length)];
+    const emoji  = emojis[Math.floor(Math.random() * emojis.length)];
+
+    // Save blob to IndexedDB
+    let dbId = null;
+    try {
+      dbId = await saveSong({ title, artist, genre: 'Local', blob: file, color, emoji });
+    } catch (err) { console.warn('IndexedDB save failed', err); }
+
     songs.push({
-      id: songs.length,
-      title:   parts.length > 1 ? parts.slice(1).join(' - ') : name,
-      artist:  parts.length > 1 ? parts[0] : 'Unknown Artist',
-      genre:   'Local', duration: '—',
-      src:     url, isLocal: true, generated: false,
-      color:   colors[Math.floor(Math.random() * colors.length)],
-      emoji:   emojis[Math.floor(Math.random() * emojis.length)],
+      id: songs.length, dbId,
+      title, artist, genre: 'Local', duration: '—',
+      src: URL.createObjectURL(file),
+      isLocal: true, generated: false, color, emoji,
     });
-  });
+  }
+
   renderGrid(songs);
   renderQueue();
-  showToast(`✅ Added ${files.length} song${files.length > 1 ? 's' : ''}`, 2500);
+  showToast(`✅ Added ${files.length} song${files.length > 1 ? 's' : ''} — saved for next visit`, 2500);
   e.target.value = '';
 });
 
