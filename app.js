@@ -1,5 +1,5 @@
 /** app.js - GrooveBox */
-
+// Default Songs
 const CATALOGUE = [
   { id:'s1', title:'Midnight Drift', artist:'GrooveBox', genre:'Lo-Fi',     synthStyle:'lofi',      color:'#ff6b9d', emoji:'🌙' },
   { id:'s2', title:'Neon Pulse',     artist:'GrooveBox', genre:'Synthwave', synthStyle:'synthwave', color:'#c471ed', emoji:'🌆' },
