@@ -354,7 +354,7 @@ async function handleUpload(files, targetPlId) {
     const color = COLORS[Math.floor(Math.random() * COLORS.length)];
     const emoji = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
     try {
-      const id = await saveSong({ title, artist: 'Local', genre: 'Uploaded', blob: file, color, emoji });
+      const id = String(await saveSong({ title, artist: 'Local', genre: 'Uploaded', blob: file, color, emoji }));
       const src = URL.createObjectURL(file);
       allSongs.push({ id, title, artist: 'Local', genre: 'Uploaded', src, color, emoji, isLocal: true });
       const plId = targetPlId || activePl;
@@ -387,6 +387,7 @@ async function init() {
     const local = await loadSongs();
     local.forEach(s => {
       s.isLocal = true;
+      s.id = String(s.id);
       if (!s.src && s.blob) s.src = URL.createObjectURL(s.blob);
       allSongs.push(s);
     });
