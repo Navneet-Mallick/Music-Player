@@ -4,8 +4,10 @@ const CATALOGUE = [
   { id:'s1', title:'Midnight Drift', artist:'GrooveBox', genre:'Lo-Fi',     synthStyle:'lofi',      color:'#ff6b9d', emoji:'🌙' },
   { id:'s2', title:'Neon Pulse',     artist:'GrooveBox', genre:'Synthwave', synthStyle:'synthwave', color:'#c471ed', emoji:'🌆' },
   { id:'s3', title:'Deep Space',     artist:'GrooveBox', genre:'Ambient',   synthStyle:'ambient',   color:'#12c2e9', emoji:'🌌' },
+  { id:'s4', title:'Jeewan Ko Bato',   artist:'Unknown',   genre:'Nepali',     src:'Jeewan Ko Bato.mp3', color:'#ff4444', emoji:'💫' },
+  { id:'s5', title:'Bolly Music',         artist:'Unknown',    genre:'Rock',      src:'Music.mp3',       color:'#fee140', emoji:'❤️' },
   { id:'s4', title:'Demons Phonk',   artist:'Unknown',   genre:'Phonk',     src:'demons_phonk.mp3', color:'#ff4444', emoji:'😈' },
-  { id:'s5', title:'Hotel California',         artist:'Eagles',    genre:'Rock',      src:'eagles.mp3',       color:'#fee140', emoji:'🦅' },
+  { id:'s5', title:'Hotel California_Intro',         artist:'Eagles',    genre:'Rock',      src:'eagles.mp3',       color:'#fee140', emoji:'🦅' },
 ];
 
 let allSongs   = [...CATALOGUE];
@@ -26,9 +28,23 @@ let actx = null, masterGain = null;
 let synthNodes = [], synthTimer = null, synthTick = null;
 const SYNTH_DUR = 120;
 const CHORDS = {
-  lofi:      [[220,261.63,329.63,392],[196,246.94,293.66,369.99],[174.61,220,261.63,329.63]],
-  synthwave: [[164.81,207.65,246.94,329.63],[146.83,185,220,293.66],[130.81,164.81,196,261.63]],
-  ambient:   [[130.81,164.81,196,261.63],[146.83,174.61,220,293.66],[116.54,155.56,185,233.08]],
+  lofi: [
+    [220, 329.63, 392, 493.88],        // Amaj7 (add warmth)
+    [196, 293.66, 369.99, 440],        // Gmaj7 (smooth transition)
+    [174.61, 261.63, 329.63, 415.30],  // Fmaj7 (dreamy feel)
+  ],
+
+  synthwave: [
+    [164.81, 246.94, 329.63, 415.30],  // Emaj7 (lush retro)
+    [146.83, 220, 293.66, 369.99],     // Dmaj7 (uplift)
+    [130.81, 196, 261.63, 329.63],     // Cmaj7 (nostalgic resolve)
+  ],
+
+  ambient: [
+    [130.81, 196, 261.63, 392],        // C(add2/add9 feel)
+    [146.83, 220, 293.66, 440],        // Dsus2 / airy
+    [116.54, 185, 233.08, 349.23],     // Bbmaj7-ish (floating)
+  ],
 };
 let chordIdx = 0;
 
