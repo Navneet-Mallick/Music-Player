@@ -244,6 +244,66 @@ function showToast(msg) {
   toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
+// Inline confirm — replaces browser confirm() which is blocked in iOS PWA/iframe contexts
+let confirmEl = null;
+function showConfirm(msg, onYes) {
+  if (confirmEl) confirmEl.remove();
+  confirmEl = document.createElement('div');
+  confirmEl.className = 'confirm-dialog';
+  confirmEl.innerHTML =
+    '<div class="confirm-inner">'
+    + '<p class="confirm-msg">' + escHtml(msg) + '</p>'
+    + '<div class="confirm-btns">'
+    + '<button class="confirm-no">Cancel</button>'
+    + '<button class="confirm-yes">Delete</button>'
+    + '</div></div>';
+  document.body.appendChild(confirmEl);
+  confirmEl.querySelector('.confirm-no').addEventListener('click',  () => confirmEl.remove());
+  confirmEl.querySelector('.confirm-yes').addEventListener('click', () => { confirmEl.remove(); onYes(); });
+  confirmEl.addEventListener('click', e => { if (e.target === confirmEl) confirmEl.remove(); });
+}
+
+// Inline new-playlist dialog — replaces prompt() which is blocked in iOS PWA/iframe contexts
+function openNewPlaylistDialog() {
+  let dlg = document.getElementById('new-pl-dialog');
+  if (!dlg) {
+    dlg = document.createElement('div');
+    dlg.id = 'new-pl-dialog';
+    dlg.className = 'confirm-dialog';
+    dlg.innerHTML =
+      '<div class="confirm-inner">'
+      + '<p class="confirm-msg">New Playlist</p>'
+      + '<input id="new-pl-input" type="text" placeholder="Playlist name…" maxlength="40" '
+      +   'style="width:100%;background:var(--surface2);border:1px solid var(--border-strong);'
+      +   'border-radius:8px;padding:9px 13px;color:var(--text);font-size:0.9rem;outline:none;'
+      +   'font-family:inherit;margin-bottom:10px;box-sizing:border-box"/>'
+      + '<div class="confirm-btns">'
+      + '<button class="confirm-no">Cancel</button>'
+      + '<button class="confirm-yes confirm-create">Create</button>'
+      + '</div></div>';
+    document.body.appendChild(dlg);
+    dlg.querySelector('.confirm-no').addEventListener('click', () => dlg.remove());
+    dlg.querySelector('.confirm-yes').addEventListener('click', () => {
+      const name = document.getElementById('new-pl-input').value.trim();
+      if (!name) return;
+      const pl = { id: 'pl' + Date.now(), name, songIds: [] };
+      playlists.push(pl); savePlaylists(); renderPlaylists();
+      showToast('Playlist created: ' + pl.name);
+      dlg.remove();
+    });
+    dlg.addEventListener('click', e => { if (e.target === dlg) dlg.remove(); });
+    document.getElementById('new-pl-input').addEventListener('keydown', e => {
+      if (e.key === 'Enter') dlg.querySelector('.confirm-yes').click();
+      if (e.key === 'Escape') dlg.remove();
+    });
+  } else {
+    dlg.style.display = 'flex';
+    const inp = document.getElementById('new-pl-input');
+    if (inp) inp.value = '';
+  }
+  setTimeout(() => document.getElementById('new-pl-input')?.focus(), 50);
+}
+
 function setProgress(cur, tot) {
   const pct = Math.min((cur / tot) * 100, 100);
   document.getElementById('progress-fill').style.width = pct + '%';
@@ -538,15 +598,17 @@ async function handleUpload(files, targetPlId) {
 
 async function handleDelete(id) {
   const song = getSong(id);
-  if (!song || !confirm('Delete "' + song.title + '"?')) return;
-  try {
-    // IndexedDB key is numeric; local ids are stringified numbers
-    await deleteSong(isNaN(Number(id)) ? id : Number(id));
-    if (currentId === id) { audioEl.pause(); stopVisualizer(); isPlaying = false; currentId = null; }
-    allSongs = allSongs.filter(s => s.id !== id);
-    playlists.forEach(pl => { pl.songIds = pl.songIds.filter(sid => sid !== id); });
-    savePlaylists(); renderAll(); renderPlaylists(); refreshUI(); showToast('Deleted');
-  } catch(e) { showToast('Delete failed: ' + e.message); }
+  if (!song) return;
+  // Use inline confirm toast instead of browser confirm() which is blocked on some mobile browsers
+  showConfirm('Delete "' + song.title + '"?', async () => {
+    try {
+      await deleteSong(isNaN(Number(id)) ? id : Number(id));
+      if (currentId === id) { audioEl.pause(); stopVisualizer(); isPlaying = false; currentId = null; }
+      allSongs = allSongs.filter(s => s.id !== id);
+      playlists.forEach(pl => { pl.songIds = pl.songIds.filter(sid => sid !== id); });
+      savePlaylists(); renderAll(); renderPlaylists(); refreshUI(); showToast('Deleted');
+    } catch(e) { showToast('Delete failed: ' + e.message); }
+  });
 }
 
 // ─── Drag-and-drop ────────────────────────────────────────────────────────────
@@ -586,7 +648,10 @@ function makeSlider(barEl, onValue) {
   barEl.addEventListener('mousedown',  e => { dragging = true; onValue(calc(e)); });
   barEl.addEventListener('touchstart', e => { dragging = true; onValue(calc(e)); }, { passive: true });
   document.addEventListener('mousemove',  e => { if (dragging) onValue(calc(e)); });
-  document.addEventListener('touchmove',  e => { if (dragging) onValue(calc(e)); }, { passive: true });
+  // passive: false so we can preventDefault and stop page scroll while dragging
+  document.addEventListener('touchmove',  e => {
+    if (dragging) { e.preventDefault(); onValue(calc(e)); }
+  }, { passive: false });
   document.addEventListener('mouseup',  () => { dragging = false; });
   document.addEventListener('touchend', () => { dragging = false; });
 }
@@ -627,11 +692,14 @@ function showWelcome() {
     + '<p class="welcome-sub">Press <kbd style="background:#1a1a1a;border:1px solid #333;border-radius:4px;padding:1px 6px;font-size:0.7rem">?</kbd> anytime for keyboard shortcuts</p>'
     + '</div>';
   document.body.appendChild(ov);
-  document.getElementById('start-btn').addEventListener('click', () => {
+  function dismissWelcome() {
+    ov.style.pointerEvents = 'none';
     ov.classList.add('fade-out');
-    setTimeout(() => ov.remove(), 500);
-    playSong(allSongs[0].id);
-  });
+    setTimeout(() => { if (ov.parentNode) ov.remove(); }, 500);
+    if (allSongs.length) playSong(allSongs[0].id);
+  }
+  document.getElementById('start-btn').addEventListener('click', dismissWelcome);
+  document.getElementById('start-btn').addEventListener('touchend', e => { e.preventDefault(); dismissWelcome(); });
 }
 
 // ─── Event wiring ─────────────────────────────────────────────────────────────
@@ -749,11 +817,13 @@ function setupEvents() {
       e.stopPropagation();
       const plId = delBtn.dataset.plId;
       const pl   = playlists.find(p => p.id === plId);
-      if (pl && confirm('Delete playlist "' + pl.name + '"?')) {
-        playlists = playlists.filter(p => p.id !== plId);
-        savePlaylists();
-        if (activePl === plId) { activePl = null; document.getElementById('main-title').textContent = 'All Songs'; }
-        renderPlaylists(); renderAll();
+      if (pl) {
+        showConfirm('Delete playlist "' + pl.name + '"?', () => {
+          playlists = playlists.filter(p => p.id !== plId);
+          savePlaylists();
+          if (activePl === plId) { activePl = null; document.getElementById('main-title').textContent = 'All Songs'; }
+          renderPlaylists(); renderAll();
+        });
       }
       return;
     }
@@ -768,13 +838,9 @@ function setupEvents() {
     }
   });
 
-  // New playlist button
+  // New playlist button — open a mini inline modal instead of prompt() (blocked on iOS PWA)
   document.getElementById('new-playlist-btn').addEventListener('click', () => {
-    const name = prompt('Playlist name:');
-    if (!name || !name.trim()) return;
-    const pl = { id: 'pl' + Date.now(), name: name.trim(), songIds: [] };
-    playlists.push(pl); savePlaylists(); renderPlaylists();
-    showToast('Playlist created: ' + pl.name);
+    openNewPlaylistDialog();
   });
 
   // Search
@@ -943,10 +1009,13 @@ function setupSleepTimer() {
     e.stopPropagation();
     menu.classList.toggle('open');
   });
-  document.addEventListener('click', e => {
+  // iOS doesn't fire click on non-interactive elements; use both click and touchstart
+  function closeSleepMenu(e) {
     if (!document.getElementById('sleep-timer-wrap').contains(e.target))
       menu.classList.remove('open');
-  });
+  }
+  document.addEventListener('click', closeSleepMenu);
+  document.addEventListener('touchstart', closeSleepMenu, { passive: true });
   document.querySelectorAll('.sleep-opt').forEach(opt => {
     opt.addEventListener('click', () => {
       setSleepTimer(parseInt(opt.dataset.mins));
