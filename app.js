@@ -3,6 +3,8 @@
 
 // ─── Catalogue ────────────────────────────────────────────────────────────────
 const CATALOGUE = [
+  {id:'s1',  title:'Aankhon Mein Tu',            artist:'random', genre:'Pop/Rock',       src:'./tracks/Aankhon Mein Tu.mp3',        color:'#ff6b9d', emoji:'🌟' },
+  { id:'s2', title:'Rise From The Ashes',                artist:'groove', genre:'Rock/Alternative', src:'./tracks/Rise From The Ashes.mp3',              color:'#c471ed', emoji:'💥' },
   { id:'s3',  title:'Sanam',                 artist:'SANAM',   genre:'Pop/Fusion',    src:'./tracks/sanam.mp3',              color:'#12c2e9', emoji:'🎸' },
   { id:'s4',  title:'Jeewan Ko Bato',        artist:'Unknown', genre:'Nepali',        src:'./tracks/Jeewan Ko Bato.mp3',     color:'#ff4444', emoji:'💫' },
   { id:'s5',  title:'Ambarsariya',           artist:'Unknown', genre:'Rock/Guitar',   src:'./tracks/ambarsariya.mp3',        color:'#fee140', emoji:'❤️' },
@@ -12,6 +14,7 @@ const CATALOGUE = [
   { id:'s9',  title:'Pehli Nazar Ka Ehsaas', artist:'Unknown', genre:'Romantic',      src:'./tracks/vibe.mp3',               color:'#4facfe', emoji:'🌷' },
   { id:'s10', title:'Scam',                  artist:'Unknown', genre:'Funky',         src:'./tracks/scam.mp3',               color:'#43e97b', emoji:'🚀' },
   { id:'s11', title:'Bolly Music',           artist:'Unknown', genre:'Bollywood',     src:'./tracks/Music.mp3',              color:'#fa709a', emoji:'💝' },
+  {id:'s12', title:'Keepers_of_the_Flame', artist:'genius', genre:'Epic/Rock', src:'./tracks/Keepers_of_the_Flame.mp3', color:'#ff6b9d', emoji:'🌹' }  ,
 ];
 
 // ─── State ────────────────────────────────────────────────────────────────────
