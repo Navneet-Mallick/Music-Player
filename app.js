@@ -11,10 +11,11 @@ const CATALOGUE = [
   // ── Rock ──
   { id:'s5',  title:'Ambarsariya',           artist:'Unknown',  genre:'Rock/Guitar',      src:'./tracks/ambarsariya.mp3',           color:'#fee140', emoji:'❤️', categories:['rock'] },
   { id:'s8',  title:'Hotel California Intro',artist:'Eagles',   genre:'Rock',             src:'./tracks/eagles.mp3',                color:'#fee140', emoji:'🦅', categories:['rock'] },
+    { id:'s4',  title:'Jeewan Ko Bato',        artist:'Unknown',  genre:'Nepali',           src:'./tracks/Jeewan Ko Bato.mp3',        color:'#ff4444', emoji:'💫', categories:['bollywood'] },
+{ id:'s17', title:'Yaad',   artist:'Unknown',  genre:'Nepali',   src:'./tracks/Yaad.mp3',              color:'#ffecd2', emoji:'💞', categories:['bollywood','chill'] },
 
   // ── Bollywood / Desi ──
   { id:'s3',  title:'Sanam',                 artist:'SANAM',    genre:'Pop/Fusion',       src:'./tracks/sanam.mp3',                 color:'#12c2e9', emoji:'🎸', categories:['bollywood'] },
-  { id:'s4',  title:'Jeewan Ko Bato',        artist:'Unknown',  genre:'Nepali',           src:'./tracks/Jeewan Ko Bato.mp3',        color:'#ff4444', emoji:'💫', categories:['bollywood'] },
   { id:'s11', title:'Bolly Music',           artist:'Unknown',  genre:'Bollywood',        src:'./tracks/Music.mp3',                 color:'#fa709a', emoji:'💝', categories:['bollywood'] },
   { id:'s16', title:'Safar',             artist:'Unknown',  genre:'Bollywood/Pop',    src:'./tracks/safar.mp3',             color:'#f6d365', emoji:'💖', categories:['bollywood','chill'] },
   { id:'s17', title:'Rastey',   artist:'Unknown',  genre:'Bollywood/Soft',   src:'./tracks/raste.mp3',              color:'#ffecd2', emoji:'👫', categories:['bollywood','chill'] },
