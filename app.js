@@ -7,7 +7,7 @@ const CATALOGUE = [
   { id:'s1',  title:'Aankhon Mein Tu',       artist:'Unknown',  genre:'Pop/Rock',         src:'./tracks/Aankhon Mein Tu.mp3',       color:'#ff6b9d', emoji:'🌟', categories:['classics'] },
   { id:'s2',  title:'Rise From The Ashes',   artist:'Groove',   genre:'Rock/Alternative', src:'./tracks/Rise From The Ashes.mp3',   color:'#c471ed', emoji:'💥', categories:['classics','rock'] },
   { id:'s12', title:'Keepers of the Flame',  artist:'Genius',   genre:'Epic/Rock',        src:'./tracks/Keepers_of_the_Flame.mp3',  color:'#ff6b9d', emoji:'🌹', categories:['classics','rock'] },
-
+ { id:'s18', title:'Raahon_ka_Silsila',          artist:'Unknown',  genre:'Epic/Ambient',     src:'./tracks/Raahon_ka_Silsila.mp3',          color:'#c471ed', emoji:'🏜️', categories:['classics','chill'] },
   // ── Rock ──
   { id:'s5',  title:'Ambarsariya',           artist:'Unknown',  genre:'Rock/Guitar',      src:'./tracks/ambarsariya.mp3',           color:'#fee140', emoji:'❤️', categories:['rock'] },
   { id:'s8',  title:'Hotel California Intro',artist:'Eagles',   genre:'Rock',             src:'./tracks/eagles.mp3',                color:'#fee140', emoji:'🦅', categories:['rock'] },
@@ -16,7 +16,8 @@ const CATALOGUE = [
   { id:'s3',  title:'Sanam',                 artist:'SANAM',    genre:'Pop/Fusion',       src:'./tracks/sanam.mp3',                 color:'#12c2e9', emoji:'🎸', categories:['bollywood'] },
   { id:'s4',  title:'Jeewan Ko Bato',        artist:'Unknown',  genre:'Nepali',           src:'./tracks/Jeewan Ko Bato.mp3',        color:'#ff4444', emoji:'💫', categories:['bollywood'] },
   { id:'s11', title:'Bolly Music',           artist:'Unknown',  genre:'Bollywood',        src:'./tracks/Music.mp3',                 color:'#fa709a', emoji:'💝', categories:['bollywood'] },
-
+  { id:'s16', title:'Safar',             artist:'Unknown',  genre:'Bollywood/Pop',    src:'./tracks/safar.mp3',             color:'#f6d365', emoji:'💖', categories:['bollywood','chill'] },
+  { id:'s17', title:'Rastey',   artist:'Unknown',  genre:'Bollywood/Soft',   src:'./tracks/raste.mp3',              color:'#ffecd2', emoji:'👫', categories:['bollywood','chill'] },
   // ── Phonk / Dark ──
   { id:'s7',  title:'Demons Phonk',          artist:'Unknown',  genre:'Phonk',            src:'./tracks/demons_phonk.mp3',          color:'#ff4444', emoji:'😈', categories:['phonk'] },
   { id:'s10', title:'Scam',                  artist:'Unknown',  genre:'Funky/Dark',       src:'./tracks/scam.mp3',                  color:'#43e97b', emoji:'🚀', categories:['phonk'] },
