@@ -18,7 +18,7 @@ const CATALOGUE = [
   { id:'s3',  title:'Sanam',                 artist:'SANAM',    genre:'Pop/Fusion',       src:'./tracks/sanam.mp3',                 color:'#12c2e9', emoji:'🎸', categories:['bollywood'] },
   { id:'s11', title:'Bolly Music',           artist:'Unknown',  genre:'Bollywood',        src:'./tracks/Music.mp3',                 color:'#fa709a', emoji:'💝', categories:['bollywood'] },
   { id:'s16', title:'Safar',             artist:'Unknown',  genre:'Bollywood/Pop',    src:'./tracks/safar.mp3',             color:'#f6d365', emoji:'💖', categories:['bollywood','chill'] },
-  { id:'s17', title:'Rastey',   artist:'Unknown',  genre:'Bollywood/Soft',   src:'./tracks/raste.mp3',              color:'#ffecd2', emoji:'👫', categories:['bollywood','chill'] },
+  { id:'s84', title:'Rastey',   artist:'Unknown',  genre:'Bollywood/Soft',   src:'./tracks/raste.mp3',              color:'#ffecd2', emoji:'👫', categories:['bollywood','chill'] },
   // ── Phonk / Dark ──
   { id:'s7',  title:'Demons Phonk',          artist:'Unknown',  genre:'Phonk',            src:'./tracks/demons_phonk.mp3',          color:'#ff4444', emoji:'😈', categories:['phonk'] },
   { id:'s10', title:'Scam',                  artist:'Unknown',  genre:'Funky/Dark',       src:'./tracks/scam.mp3',                  color:'#43e97b', emoji:'🚀', categories:['phonk'] },

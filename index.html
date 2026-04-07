@@ -17,6 +17,8 @@
     })();
   </script>
 </head>
+<!-- Building a PWA -->
+<link rel="manifest" href="manifest.json"/>
 <body>
 
 <div class="app" id="app">
@@ -216,6 +218,18 @@
 <canvas id="visualizer-canvas"></canvas>
 
 <audio id="audio-player" crossorigin="anonymous"></audio>
+<!-- adding script for service worker -->
+ <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('sw.js').then(function(registration) {
+          console.log('ServiceWorker registration successful with scope: ', registration.scope);
+        }, function(err) {
+          console.log('ServiceWorker registration failed: ', err);
+        });
+      });
+    }
+  </script>
 <script src="db.js"></script>
 <script src="app.js"></script>
 </body>
