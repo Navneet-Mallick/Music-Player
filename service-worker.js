@@ -1,37 +1,47 @@
-// This is the service worker with the Cache-first network
+// GrooveBox Service Worker - Cache First Strategy
 
-const CACHE = "pwabuilder-precache";
+const CACHE = "grooovebox-v1";
 const precacheFiles = [
-    /* Add an array of files to precache for your app */
     "./",
     "./index.html",
     "./db.js",
     "./app.js",
     "./style.css",
     "./manifest.json",
-    "./assets/icon-192.png",
-    "./assets/icon-512.png",
+    "./image.png",
 ];
 
-// Install stage sets up the cache-array to configure pre-cache content
+// Install - cache all files
 self.addEventListener("install", event => {
-    console.log("[PWA Builder] Install Event processing");
+    console.log("[GrooveBox SW] Installing...");
     event.waitUntil(
         caches.open(CACHE).then(cache => {
-            console.log("[PWA Builder] Caching pages during install");
+            console.log("[GrooveBox SW] Caching app files");
             return cache.addAll(precacheFiles);
         })
     );
 });
 
-// If any fetch fails, it will look for the request in the cache and serve it from there first
+// Activate - clear old caches
+self.addEventListener("activate", event => {
+    console.log("[GrooveBox SW] Activating...");
+    event.waitUntil(
+        caches.keys().then(keys =>
+            Promise.all(
+                keys.filter(k => k !== CACHE).map(k => {
+                    console.log("[GrooveBox SW] Deleting old cache:", k);
+                    return caches.delete(k);
+                })
+            )
+        )
+    );
+});
+
+// Fetch - serve from cache, fallback to network
 self.addEventListener("fetch", event => {
-    console.log("[PWA Builder] The service worker is serving the asset.");
     event.respondWith(
         caches.match(event.request).then(response => {
             return response || fetch(event.request);
         })
     );
 });
-
-// This is a simple example of a service worker with Cache-first network
