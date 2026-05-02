@@ -270,8 +270,6 @@ function playSong(id) {
 
   stopVisualizer();
   stopLofi();
-  audioEl.pause();
-  audioEl.src = '';
 
   currentId = id;
   isPlaying = true;
@@ -293,17 +291,32 @@ function playSong(id) {
     return;
   }
 
+  // Set src and attempt to play with proper error handling
   audioEl.src = song.src;
-  audioEl.load();
   audioEl.volume = isMuted ? 0 : volume;
-  audioEl.play().then(() => {
-    startVisualizer();
-    updateMediaSession(song);
-  }).catch(err => {
-    console.error(err);
-    showToast('Cannot play: ' + err.message);
-    isPlaying = false;
-  });
+  
+  // Use load() to reset playback state before playing
+  audioEl.load();
+  
+  const playPromise = audioEl.play();
+  if (playPromise !== undefined) {
+    playPromise.then(() => {
+      startVisualizer();
+      updateMediaSession(song);
+    }).catch(err => {
+      console.error('Playback failed:', err);
+      showToast('Cannot play: ' + err.message);
+      isPlaying = false;
+    });
+  } else {
+    // Fallback for older browsers
+    try {
+      startVisualizer();
+      updateMediaSession(song);
+    } catch(e) {
+      console.error(e);
+    }
+  }
 
   // Cover pulse animation
   const cover = document.getElementById('np-cover');
